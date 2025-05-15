@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Love Letter</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Georgia', serif;
+      background: linear-gradient(to bottom, #fff0f5, #ffe4e1);
+      color: #5a2a27;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .letter {
+      background: white;
+      padding: 2rem;
+      border-radius: 1rem;
+      max-width: 600px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+      animation: fadeIn 3s ease-in;
+    }
+
+    .tulip {
+      width: 60px;
+      height: 100px;
+      position: relative;
+      margin: 2rem auto;
+      animation: sway 4s infinite ease-in-out;
+    }
+
+    .tulip::before, .tulip::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      border-radius: 50% 50% 0 0;
+    }
+
+    .tulip::before {
+      width: 60px;
+      height: 60px;
+      background: #ff69b4;
+      left: 0;
+    }
+
+    .tulip::after {
+      width: 8px;
+      height: 60px;
+      background: green;
+      left: 26px;
+      border-radius: 0;
+    }
+
+    @keyframes sway {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(2deg); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      margin-bottom: 1rem;
+      font-size: 2rem;
+      color: #b22222;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="tulip"></div>
+
+  <div class="letter">
+    <h1>To My Dearest</h1>
+    <p>
+      Every moment with you is a bloom in the garden of my life. Like a tulip that opens its petals to the morning sun, my heart opens to you with warmth, trust, and an endless longing. I’ve found in you the poetry I never knew I was meant to write, the gentle rhythm in the chaos of my days.
+    </p>
+    <p>
+      Though the world may change and seasons may fade, my love for you stands timeless. You are the reason I smile without cause, hope without fear, and dream without end. In every heartbeat, you are there—my forever, my always.
+    </p>
+  </div>
+
+</body>
+</html>
