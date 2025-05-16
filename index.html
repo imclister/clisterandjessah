@@ -20,7 +20,7 @@
     display: block;
     background: #fff0f6;
   }
-  .proposal {
+  .hidden {
     display: none;
     margin-top: 2rem;
     color: #c2185b;
@@ -28,7 +28,7 @@
     font-weight: bold;
     animation: fadeIn 1s ease forwards;
   }
-  .proposal.show {
+  .hidden.show {
     display: block;
   }
   @keyframes fadeIn {
@@ -54,8 +54,43 @@
   <p>Draw a heart below to reveal a special message...</p>
   <canvas id="canvas" width="300" height="300"></canvas>
 
-  <div class="proposal" id="proposal">
-    Will you marry me on our 12th anniversary? 💍❤️
+  <div class="hidden" id="hidden">
+    <h1>Hi, Love <span class="heart">💌</span></h1>
+
+      <p>Happy 11th anniversary! <span class="heart">💖</span></p>
+
+      <p>
+        Eleven years ago, our story began — and since then, our love has grown deeper, stronger, and more meaningful.
+        We've faced changes, challenges, and moments that tested us, but we held on. And for that, I just want to say <strong>thank you</strong>.
+      </p>
+
+      <p>
+        Thank you for always choosing to stay.<br>
+        Thank you for being my strength when I felt weak, lost, or unsure.
+        You’ve always known how to calm my storms and remind me that I’m never alone.
+      </p>
+
+      <p>
+        You completed me when I didn’t even realize something was missing.
+        You filled my heart with joy, peace, and love. Life became brighter because of you.
+      </p>
+
+      <p>
+        I promise to stay with you forever — through the highs and lows, the quiet moments and the loud ones.
+        I’ll always choose you, just like I did 11 years ago, and I’ll keep choosing you every single day.
+      </p>
+
+      <p>
+        May God continue to bless us and our journey together.
+        I know life isn’t perfect, but I believe in <strong>us</strong> — in our love, our connection, and the way we always hold on to each other no matter what.
+      </p>
+
+      <p>
+        Happy anniversary, my love.<br>
+        I love you, and I always will. Always and forever. <span class="heart">💕</span>
+      </p>
+
+      <p class="signature">— [Your Name]</p>
   </div>
 
   <div id="debug"></div>
@@ -64,7 +99,7 @@
   const canvas = document.getElementById('canvas');
   const ctx = canvas.getContext('2d');
   const debug = document.getElementById('debug');
-  const proposal = document.getElementById('proposal');
+  const hidden = document.getElementById('hidden');
   let drawing = false;
   let points = [];
 
@@ -74,7 +109,7 @@
     drawing = true;
     points = [];
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    proposal.classList.remove('show');
+    hidden.classList.remove('show');
     debug.textContent = '';
     ctx.lineWidth = 4;
     ctx.strokeStyle = '#c2185b';
@@ -96,7 +131,7 @@
     ctx.closePath();
     const result = isHeart(points);
     if (result.isHeart) {
-      proposal.classList.add('show');
+      hidden.classList.add('show');
       debug.textContent = '❤️ Heart detected! ❤️';
     } else {
       debug.textContent = `Not a heart. Try again.\nReasons:\n${result.reasons.join('\n')}`;
