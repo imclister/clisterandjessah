@@ -30,10 +30,9 @@
     font-style: normal;
   }
 
-
   body {
     font-family: 'Georgia', serif;
-    background: #fff5f7;
+    /* background: #ffffff; */
     color: #333;
     text-align: center;
     padding: 2rem;
@@ -80,18 +79,22 @@
   .betterlett {
     font-family: 'Betterlett', cursive;
     font-size: 2.7rem;
+    color: #c2185b;
   }
   .autography {
     font-family: 'Autography', cursive;
     font-size: 2.4rem;
+    color: #c2185b;
   }
   .adelia {
     font-family: 'Adelia', cursive;
     font-size: 2.2rem;
+    color: #c2185b;
   }
   .gilroy {
     font-family: 'Gilroy-Light', sans-serif;
     font-size: 1.2rem;
+    color: #c2185b;
   }
   .signature {
     margin-top: 20px;
@@ -100,19 +103,19 @@
     text-align: left;
     display: block;
   }
-
   .ps {
     margin-top: 20px;
-    font-family: 'Betterlett', cursive;
-    font-size: 1.5em;
+    font-family: 'Gilroy-Light', sans-serif;
+    font-size: 0.9em;
     text-align: center;
     display: block;
-    color: #cecece;
+    color: #de80a5;
+    opacity: 0.2;
   }
   .hide {
     display: none !important;
   }
-    .superscript {
+  .superscript {
     vertical-align: super;
     font-size: smaller;
   }
@@ -120,11 +123,8 @@
 </style>
 </head>
 <body>
+  <div class="container">
   <h2>
-    <!-- <span class="betterlett">H</span> <span class="gilroy">appy</span> 
-    <span class="gilroy">11</span> <span class="superscript">th</span>
-    <span class="betterlett">A</span> <span class="gilroy">nniversary</span> 
-    <span class="betterlett">L</span> <span class="gilroy">ove</span>💖 -->
     <span class="gilroy">Happy 11 <span class="superscript">th</span></span> <br>
     <span class="autography">A</span> <span class="gilroy">nniversary</span> 
     <span class="autography">L</span> <span class="gilroy">ove</span>💖
@@ -133,7 +133,7 @@
 
   <div class="hidden" id="hidden">
 
-      <p>To the love of my life, my Jessah<span class="heart">💖,</span></p>
+      <p>To the love of my life, my Jessah<span class="heart">,</span></p>
       <p>
         Eleven years ago, our story began. Since then, our love has grown deeper, stronger, and more meaningful. We’ve been through so much — changes, challenges, and moments that tested us — but through it all, we held on.
       </p>
@@ -164,7 +164,7 @@
   </div>
 
   <div id="debug"></div>
-
+  </div>  
 <script>
   const canvas = document.getElementById('canvas');
   const ctx = canvas.getContext('2d');
@@ -203,7 +203,7 @@
     if (result.isHeart) {
       hidden.classList.add('show');
       canvas.classList.add('hide');
-      debug.textContent = '❤️ Heart detected! ❤️';
+      // debug.textContent = '❤️ Heart detected! ❤️';
     } else {
       debug.textContent = `${result.reasons.join('\n')}`;
       setTimeout(() => {
