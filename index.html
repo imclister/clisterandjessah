@@ -3,65 +3,65 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Our Secret</title>
+  <title>Our Journey</title>
   <style>
     body {
       margin: 0;
+      padding: 40px;
       font-family: 'Georgia', serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      background: #f8f0f5;
+      background: #fff7f8;
       color: #333;
-      cursor: pointer;
-      user-select: none;
       text-align: center;
-      padding: 20px;
     }
 
-    .message {
-      opacity: 0;
+    .main-letter {
       max-width: 600px;
-      transition: opacity 1s ease;
+      margin: auto;
     }
 
-    .message.visible {
-      opacity: 1;
+    .proposal {
+      display: none;
+      margin-top: 40px;
+      color: #c2185b;
+      font-weight: bold;
+      font-size: 1.2em;
+      transition: all 0.5s ease;
     }
 
-    .hint {
-      position: absolute;
-      bottom: 30px;
-      font-size: 0.9em;
-      color: #999;
+    .proposal.reveal {
+      display: block;
     }
   </style>
 </head>
 <body>
 
-  <div class="message" id="loveMessage">
+  <div class="main-letter">
     <h1>Happy 11th Anniversary</h1>
-    <p>Eleven years — a beautiful chapter of love, laughter, and growth.</p>
-    <p>Every day with you feels like the sweetest beginning. Thank you for being my always.</p>
+    <p>For eleven beautiful years, you have filled my life with laughter, strength, and love. Through every challenge and triumph, you have been my heart’s home.</p>
+    <p>Here's to us — for everything we’ve shared and everything still waiting for us in the pages ahead.</p>
+
+    <div class="proposal" id="proposal">
+      One more thing...  
+      <br><br>
+      Will you marry me on our 12th anniversary? 💍🌷
+    </div>
   </div>
 
-  <div class="hint" id="hint">Tap 18 times to reveal something special...</div>
-
   <script>
-    let taps = 0;
-    const requiredTaps = 3;
-    const message = document.getElementById('loveMessage');
-    const hint = document.getElementById('hint');
+    const triggerWord = 'forever';
+    let buffer = '';
+    const proposalEl = document.getElementById('proposal');
 
-    document.body.addEventListener('click', () => {
-      taps++;
-      if (taps >= requiredTaps) {
-        message.classList.add('visible');
-        hint.style.display = 'none';
+    document.addEventListener('keydown', e => {
+      buffer += e.key.toLowerCase();
+      if (buffer.length > triggerWord.length) {
+        buffer = buffer.slice(-triggerWord.length);
+      }
+
+      if (buffer === triggerWord) {
+        proposalEl.classList.add('reveal');
       }
     });
   </script>
-
 </body>
 </html>
