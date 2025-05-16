@@ -99,8 +99,7 @@
       proposal.classList.add('show');
       debug.textContent = '❤️ Heart detected! ❤️';
     } else {
-      debug.textContent = `Not a heart. Reasons:\n${result.reasons.join('\n')}`;
-      // Clear canvas after 700ms to let user see their drawing briefly
+      debug.textContent = `Not a heart. Try again.\nReasons:\n${result.reasons.join('\n')}`;
       setTimeout(() => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
       }, 700);
@@ -109,19 +108,31 @@
 
   const dist = (a,b) => Math.hypot(a.x - b.x, a.y - b.y);
 
+  function angleBetween(p1, p2, p3) {
+    // angle at p2 between p1 and p3
+    const a = Math.hypot(p3.x - p1.x, p3.y - p1.y);
+    const b = Math.hypot(p2.x - p1.x, p2.y - p1.y);
+    const c = Math.hypot(p3.x - p2.x, p3.y - p2.y);
+    if (b === 0 || c === 0) return 0;
+    // law of cosines
+    const cosAngle = (b*b + c*c - a*a) / (2*b*c);
+    return Math.acos(Math.min(1, Math.max(-1, cosAngle))) * 180 / Math.PI;
+  }
+
   function isHeart(pts) {
     const reasons = [];
 
-    if (pts.length < 20) {
+    if (pts.length < 40) {
       reasons.push('Too few points drawn.');
       return { isHeart: false, reasons };
     }
 
-    if (dist(pts[0], pts[pts.length -1]) > 40) {
+    if (dist(pts[0], pts[pts.length -1]) > 30) {
       reasons.push('Shape not closed (start and end too far).');
       return { isHeart: false, reasons };
     }
 
+    // bounding box
     let minX = pts[0].x, maxX = pts[0].x;
     let minY = pts[0].y, maxY = pts[0].y;
     pts.forEach(p => {
@@ -133,38 +144,68 @@
     const width = maxX - minX;
     const height = maxY - minY;
 
-    if (width < 50 || height < 50) {
+    if (width < 70 || height < 70) {
       reasons.push('Shape too small.');
       return { isHeart: false, reasons };
     }
 
+    // symmetry check (horizontal)
     const centerX = (minX + maxX) / 2;
     let symmetricPoints = 0;
     pts.forEach(p => {
       const mirroredX = centerX - (p.x - centerX);
-      const match = pts.find(q => Math.abs(q.x - mirroredX) < 20 && Math.abs(q.y - p.y) < 20);
+      const match = pts.find(q => Math.abs(q.x - mirroredX) < 15 && Math.abs(q.y - p.y) < 15);
       if (match) symmetricPoints++;
     });
     const symmetryRatio = symmetricPoints / pts.length;
-    if (symmetryRatio < 0.6) {
+    if (symmetryRatio < 0.7) {
       reasons.push(`Not symmetric enough horizontally (symmetry ratio: ${symmetryRatio.toFixed(2)})`);
       return { isHeart: false, reasons };
     }
 
+    // find key points: top left, top right (lobes), and bottom point
     const leftPts = pts.filter(p => p.x < centerX);
     const rightPts = pts.filter(p => p.x > centerX);
     const leftTopY = Math.min(...leftPts.map(p => p.y));
     const rightTopY = Math.min(...rightPts.map(p => p.y));
 
     if (leftTopY > minY + 20) {
-      reasons.push('Left top lobe too low (should be close to top).');
+      reasons.push('Left top lobe too low.');
       return { isHeart: false, reasons };
     }
     if (rightTopY > minY + 20) {
-      reasons.push('Right top lobe too low (should be close to top).');
+      reasons.push('Right top lobe too low.');
       return { isHeart: false, reasons };
     }
 
+    // check lobes roundness by angles near top lobes
+    // find points near left top lobe
+    const leftLobePts = leftPts.filter(p => p.y <= leftTopY + 30);
+    // check angle at highest point among them
+    const leftTopPoint = leftPts.reduce((minP,p) => p.y < minP.y ? p : minP, leftPts[0]);
+    const leftAngle = angleBetween(
+      leftLobePts[0] || leftTopPoint,
+      leftTopPoint,
+      leftLobePts[leftLobePts.length -1] || leftTopPoint
+    );
+    if (leftAngle < 40) {
+      reasons.push('Left lobe too sharp (should be rounded).');
+      return { isHeart: false, reasons };
+    }
+
+    const rightLobePts = rightPts.filter(p => p.y <= rightTopY + 30);
+    const rightTopPoint = rightPts.reduce((minP,p) => p.y < minP.y ? p : minP, rightPts[0]);
+    const rightAngle = angleBetween(
+      rightLobePts[0] || rightTopPoint,
+      rightTopPoint,
+      rightLobePts[rightLobePts.length -1] || rightTopPoint
+    );
+    if (rightAngle < 40) {
+      reasons.push('Right lobe too sharp (should be rounded).');
+      return { isHeart: false, reasons };
+    }
+
+    // bottom point: lowest point near center horizontally
     const bottomPt = pts.reduce((maxP, p) => p.y > maxP.y ? p : maxP, pts[0]);
     if (bottomPt.y < maxY - 20) {
       reasons.push('Bottom point is not low enough.');
@@ -175,6 +216,17 @@
       return { isHeart: false, reasons };
     }
 
+    // check bottom point angle sharpness (should be sharp)
+    const bottomIdx = pts.indexOf(bottomPt);
+    const prev = pts[(bottomIdx - 5 + pts.length) % pts.length];
+    const next = pts[(bottomIdx + 5) % pts.length];
+    const bottomAngle = angleBetween(prev, bottomPt, next);
+    if (bottomAngle > 70) {
+      reasons.push('Bottom point not sharp enough.');
+      return { isHeart: false, reasons };
+    }
+
+    // all checks passed
     return { isHeart: true, reasons };
   }
 </script>
