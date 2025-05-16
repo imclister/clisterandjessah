@@ -17,6 +17,12 @@
     font-weight: normal;
     font-style: normal;
   }
+  @font-face {
+    font-family: 'Autography';
+    src: url('Autography.otf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
 
   body {
     font-family: 'Georgia', serif;
@@ -68,8 +74,13 @@
     font-family: 'Betterlett', cursive;
     font-size: 2.7rem;
   }
+  .autography {
+    font-family: 'Autography', cursive;
+    font-size: 2.2rem;
+  }
   .gilroy {
     font-family: 'Gilroy-Light', sans-serif;
+    font-size: 1.1rem;
   }
   .signature {
     margin-top: 20px;
@@ -99,10 +110,13 @@
 </head>
 <body>
   <h2>
-    <span class="betterlett">H</span> <span class="gilroy">appy</span> 
+    <!-- <span class="betterlett">H</span> <span class="gilroy">appy</span> 
     <span class="gilroy">11</span> <span class="superscript">th</span>
     <span class="betterlett">A</span> <span class="gilroy">nniversary</span> 
-    <span class="betterlett">L</span> <span class="gilroy">ove</span>💖
+    <span class="betterlett">L</span> <span class="gilroy">ove</span>💖 -->
+    <span class="gilroy">Happy 11 <span class="superscript">th</span></span> <br>
+    <span class="autography">A</span> <span class="gilroy">nniversary</span> 
+    <span class="autography">L</span> <span class="gilroy">ove</span>💖
   </h2>
   <canvas id="canvas" width="300" height="300"></canvas>
 
