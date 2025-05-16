@@ -5,6 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Draw Your Love</title>
 <style>
+  @font-face {
+    font-family: 'Gilroy-Light';
+    src: url('Gilroy-Light.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Betterlett';
+    src: url('Betterlett.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+
   body {
     font-family: 'Georgia', serif;
     background: #fff5f7;
@@ -23,9 +36,9 @@
   .hidden {
     display: none;
     margin-top: 2rem;
-    color: #c2185b;
-    font-size: 1.3rem;
-    font-weight: bold;
+    /* color: #c2185b; */
+    /* font-size: 1.3rem; */
+    /* font-weight: bold; */
     animation: fadeIn 1s ease forwards;
   }
   .hidden.show {
@@ -44,45 +57,76 @@
     min-height: 3em;
   }
   p {
-    max-width: 500px;
+    font-family: 'Gilroy-Light', sans-serif;
+    max-width: 800px;
+    text-align: justify;
     margin: 0 auto;
+    padding-top: 15px;
+    padding-bottom: 15px;
   }
+  .betterlett {
+    font-family: 'Betterlett', cursive;
+    font-size: 2.7rem;
+  }
+  .gilroy {
+    font-family: 'Gilroy-Light', sans-serif;
+  }
+  .signature {
+    margin-top: 20px;
+    font-family: 'Betterlett', cursive;
+    font-size: 1.8em;
+    text-align: left;
+    display: block;
+  }
+
+  .ps {
+    margin-top: 20px;
+    font-family: 'Betterlett', cursive;
+    font-size: 1.5em;
+    text-align: center;
+    display: block;
+    color: #cecece;
+  }
+  .hide {
+    display: none !important;
+  }
+    .superscript {
+    vertical-align: super;
+    font-size: smaller;
+  }
+  
 </style>
 </head>
 <body>
-  <h1>Happy 11th Anniversary</h1>
-  <p>Draw a heart below to reveal a special message...</p>
+  <h2>
+    <span class="betterlett">H</span> <span class="gilroy">appy</span> 
+    <span class="gilroy">11</span> <span class="superscript">th</span>
+    <span class="betterlett">A</span> <span class="gilroy">nniversary</span> 
+    <span class="betterlett">L</span> <span class="gilroy">ove</span>💖
+  </h2>
   <canvas id="canvas" width="300" height="300"></canvas>
 
   <div class="hidden" id="hidden">
-    <h1>Hi, Love <span class="heart">💌</span></h1>
 
-      <p>Happy 11th anniversary! <span class="heart">💖</span></p>
-
+      <p>To the love of my life, my Jessah<span class="heart">💖,</span></p>
       <p>
-        Eleven years ago, our story began — and since then, our love has grown deeper, stronger, and more meaningful.
-        We've faced changes, challenges, and moments that tested us, but we held on. And for that, I just want to say <strong>thank you</strong>.
+        Eleven years ago, our story began. Since then, our love has grown deeper, stronger, and more meaningful. We’ve been through so much — changes, challenges, and moments that tested us — but through it all, we held on.
       </p>
 
       <p>
-        Thank you for always choosing to stay.<br>
-        Thank you for being my strength when I felt weak, lost, or unsure.
-        You’ve always known how to calm my storms and remind me that I’m never alone.
+       Thank you for staying. For choosing “us” every single time.  For being my calm when I’m overwhelmed, and my strength when I feel lost. You’ve always had a way of reminding me that I’m never alone.
       </p>
 
       <p>
-        You completed me when I didn’t even realize something was missing.
-        You filled my heart with joy, peace, and love. Life became brighter because of you.
+        You completed parts of me I didn’t even know were missing. You filled my life with joy, peace, and love. Everything feels brighter, easier, and more beautiful because of you.
       </p>
 
       <p>
-        I promise to stay with you forever — through the highs and lows, the quiet moments and the loud ones.
-        I’ll always choose you, just like I did 11 years ago, and I’ll keep choosing you every single day.
+        I may not have the perfect words to express it all, but please know this:  I’ll always choose you — through every high and low, through every season and change. Just like I did 11 years ago, and just like I’ll keep doing for the rest of my life.
       </p>
 
       <p>
-        May God continue to bless us and our journey together.
-        I know life isn’t perfect, but I believe in <strong>us</strong> — in our love, our connection, and the way we always hold on to each other no matter what.
+        May God continue to guide us and bless the life we’re building together. We may not know what the future holds, but I know one thing for sure — it’s you and me, always. Happy anniversary, my love.  I love you, and I always will. Always and forever. 
       </p>
 
       <p>
@@ -90,7 +134,8 @@
         I love you, and I always will. Always and forever. <span class="heart">💕</span>
       </p>
 
-      <p class="signature">— [Your Name]</p>
+      <p class="signature">Clister</p>
+      <p class="ps">This card knows a secret I can’t say — not yet.</p>
   </div>
 
   <div id="debug"></div>
@@ -132,9 +177,10 @@
     const result = isHeart(points);
     if (result.isHeart) {
       hidden.classList.add('show');
+      canvas.classList.add('hide');
       debug.textContent = '❤️ Heart detected! ❤️';
     } else {
-      debug.textContent = `Not a heart. Try again.\nReasons:\n${result.reasons.join('\n')}`;
+      debug.textContent = `${result.reasons.join('\n')}`;
       setTimeout(() => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
       }, 700);
@@ -155,6 +201,7 @@
   }
 
   function isHeart(pts) {
+    return { isHeart: true, reasons : 'asd' };
     const reasons = [];
 
     if (pts.length < 40) {
