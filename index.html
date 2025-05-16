@@ -158,7 +158,7 @@
       if (match) symmetricPoints++;
     });
     const symmetryRatio = symmetricPoints / pts.length;
-    if (symmetryRatio < 0.7) {
+    if (symmetryRatio < 0.5) {
       reasons.push(`Not symmetric enough horizontally (symmetry ratio: ${symmetryRatio.toFixed(2)})`);
       return { isHeart: false, reasons };
     }
