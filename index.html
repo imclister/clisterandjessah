@@ -1,67 +1,182 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Our Journey</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 40px;
-      font-family: 'Georgia', serif;
-      background: #fff7f8;
-      color: #333;
-      text-align: center;
-    }
-
-    .main-letter {
-      max-width: 600px;
-      margin: auto;
-    }
-
-    .proposal {
-      display: none;
-      margin-top: 40px;
-      color: #c2185b;
-      font-weight: bold;
-      font-size: 1.2em;
-      transition: all 0.5s ease;
-    }
-
-    .proposal.reveal {
-      display: block;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Draw Your Love</title>
+<style>
+  body {
+    font-family: 'Georgia', serif;
+    background: #fff5f7;
+    color: #333;
+    text-align: center;
+    padding: 2rem;
+  }
+  #canvas {
+    border: 2px solid #c2185b;
+    border-radius: 10px;
+    touch-action: none;
+    margin: 1rem auto;
+    display: block;
+    background: #fff0f6;
+  }
+  .proposal {
+    display: none;
+    margin-top: 2rem;
+    color: #c2185b;
+    font-size: 1.3rem;
+    font-weight: bold;
+    animation: fadeIn 1s ease forwards;
+  }
+  .proposal.show {
+    display: block;
+  }
+  @keyframes fadeIn {
+    from {opacity: 0; transform: translateY(10px);}
+    to {opacity: 1; transform: translateY(0);}
+  }
+  #debug {
+    margin-top: 1rem;
+    font-family: monospace;
+    font-size: 0.9rem;
+    color: #666;
+    white-space: pre-wrap;
+    min-height: 3em;
+  }
+  p {
+    max-width: 500px;
+    margin: 0 auto;
+  }
+</style>
 </head>
 <body>
+  <h1>Happy 11th Anniversary</h1>
+  <p>Draw a heart below to reveal a special message...</p>
+  <canvas id="canvas" width="300" height="300"></canvas>
 
-  <div class="main-letter">
-    <h1>Happy 11th Anniversary</h1>
-    <p>For eleven beautiful years, you have filled my life with laughter, strength, and love. Through every challenge and triumph, you have been my heart’s home.</p>
-    <p>Here's to us — for everything we’ve shared and everything still waiting for us in the pages ahead.</p>
-
-    <div class="proposal" id="proposal">
-      One more thing...  
-      <br><br>
-      Will you marry me on our 12th anniversary? 💍🌷
-    </div>
+  <div class="proposal" id="proposal">
+    Will you marry me on our 12th anniversary? 💍❤️
   </div>
 
-  <script>
-    const triggerWord = 'forever';
-    let buffer = '';
-    const proposalEl = document.getElementById('proposal');
+  <div id="debug"></div>
 
-    document.addEventListener('keydown', e => {
-      buffer += e.key.toLowerCase();
-      if (buffer.length > triggerWord.length) {
-        buffer = buffer.slice(-triggerWord.length);
-      }
+<script>
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+  const debug = document.getElementById('debug');
+  const proposal = document.getElementById('proposal');
+  let drawing = false;
+  let points = [];
 
-      if (buffer === triggerWord) {
-        proposalEl.classList.add('reveal');
-      }
+  canvas.style.touchAction = 'none';
+
+  canvas.addEventListener('pointerdown', (e) => {
+    drawing = true;
+    points = [];
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    proposal.classList.remove('show');
+    debug.textContent = '';
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = '#c2185b';
+    ctx.beginPath();
+    ctx.moveTo(e.offsetX, e.offsetY);
+    points.push({ x: e.offsetX, y: e.offsetY });
+  });
+
+  canvas.addEventListener('pointermove', (e) => {
+    if (!drawing) return;
+    ctx.lineTo(e.offsetX, e.offsetY);
+    ctx.stroke();
+    points.push({ x: e.offsetX, y: e.offsetY });
+  });
+
+  canvas.addEventListener('pointerup', (e) => {
+    if (!drawing) return;
+    drawing = false;
+    ctx.closePath();
+    const result = isHeart(points);
+    if (result.isHeart) {
+      proposal.classList.add('show');
+      debug.textContent = '❤️ Heart detected! ❤️';
+    } else {
+      debug.textContent = `Not a heart. Reasons:\n${result.reasons.join('\n')}`;
+      // Clear canvas after 700ms to let user see their drawing briefly
+      setTimeout(() => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }, 700);
+    }
+  });
+
+  const dist = (a,b) => Math.hypot(a.x - b.x, a.y - b.y);
+
+  function isHeart(pts) {
+    const reasons = [];
+
+    if (pts.length < 20) {
+      reasons.push('Too few points drawn.');
+      return { isHeart: false, reasons };
+    }
+
+    if (dist(pts[0], pts[pts.length -1]) > 40) {
+      reasons.push('Shape not closed (start and end too far).');
+      return { isHeart: false, reasons };
+    }
+
+    let minX = pts[0].x, maxX = pts[0].x;
+    let minY = pts[0].y, maxY = pts[0].y;
+    pts.forEach(p => {
+      if (p.x < minX) minX = p.x;
+      if (p.x > maxX) maxX = p.x;
+      if (p.y < minY) minY = p.y;
+      if (p.y > maxY) maxY = p.y;
     });
-  </script>
+    const width = maxX - minX;
+    const height = maxY - minY;
+
+    if (width < 50 || height < 50) {
+      reasons.push('Shape too small.');
+      return { isHeart: false, reasons };
+    }
+
+    const centerX = (minX + maxX) / 2;
+    let symmetricPoints = 0;
+    pts.forEach(p => {
+      const mirroredX = centerX - (p.x - centerX);
+      const match = pts.find(q => Math.abs(q.x - mirroredX) < 20 && Math.abs(q.y - p.y) < 20);
+      if (match) symmetricPoints++;
+    });
+    const symmetryRatio = symmetricPoints / pts.length;
+    if (symmetryRatio < 0.6) {
+      reasons.push(`Not symmetric enough horizontally (symmetry ratio: ${symmetryRatio.toFixed(2)})`);
+      return { isHeart: false, reasons };
+    }
+
+    const leftPts = pts.filter(p => p.x < centerX);
+    const rightPts = pts.filter(p => p.x > centerX);
+    const leftTopY = Math.min(...leftPts.map(p => p.y));
+    const rightTopY = Math.min(...rightPts.map(p => p.y));
+
+    if (leftTopY > minY + 20) {
+      reasons.push('Left top lobe too low (should be close to top).');
+      return { isHeart: false, reasons };
+    }
+    if (rightTopY > minY + 20) {
+      reasons.push('Right top lobe too low (should be close to top).');
+      return { isHeart: false, reasons };
+    }
+
+    const bottomPt = pts.reduce((maxP, p) => p.y > maxP.y ? p : maxP, pts[0]);
+    if (bottomPt.y < maxY - 20) {
+      reasons.push('Bottom point is not low enough.');
+      return { isHeart: false, reasons };
+    }
+    if (Math.abs(bottomPt.x - centerX) > width / 4) {
+      reasons.push('Bottom point not centered horizontally.');
+      return { isHeart: false, reasons };
+    }
+
+    return { isHeart: true, reasons };
+  }
+</script>
 </body>
 </html>
